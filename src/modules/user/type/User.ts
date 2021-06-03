@@ -14,6 +14,7 @@ export default interface User {
   };
   creationDate: number;
   modificationDate: number;
+  expirationDate: number;
   secondFAEnabled: boolean;
   secondFARequired: boolean;
 }

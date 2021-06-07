@@ -168,5 +168,11 @@
       "ALGORITHM": "Algorithm: ",
       "INTERVAL": "Interval: "
     }
+  },
+  "SHARED_SPACES": {
+    "MANAGE_SHARED_SPACES": {
+      "TITLE": "Drive / Workgroups",
+      "DESCRIPTION": ""
+    }
   }
 }

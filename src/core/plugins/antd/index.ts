@@ -10,6 +10,7 @@ import {
   Col,
   Dropdown,
   Form,
+  Icon,
   Input,
   Menu,
   Modal,
@@ -38,6 +39,7 @@ function useAntdComponents (vueApp: App): App {
     .use(Col)
     .use(Dropdown)
     .use(Form)
+    .use(Icon)
     .use(Input)
     .use(Menu)
     .use(Modal)

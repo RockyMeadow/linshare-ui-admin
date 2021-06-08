@@ -1,25 +1,27 @@
 <template>
   <PageTitle
-    :title="$t('USERS.MANAGE_USERS.TITLE')"
-    :subtitle="$t('USERS.MANAGE_USERS.SUBTITLE')"
+    :title="$t('SHARED_SPACES.MANAGE_SHARED_SPACES.TITLE')"
   >
     <template #helperContent>
-      <div class='alert-message-in-description'>{{ $t('NAVIGATOR.USERS') }}</div>
-      <div>{{ $t('USERS.MANAGE_USERS.DESCRIPTION') }}</div>
-      <div class='alert-message-in-description'>{{ $t('USERS.MANAGE_USERS.OPERATION') }}</div>
-      <div>{{ $t('USERS.MANAGE_USERS.SEARCH_GUIDE') }}</div>
-      <div>{{ $t('USERS.MANAGE_USERS.NAVIGATE_GUIDE') }}</div>
+      <div class='alert-message-in-description'>{{ $t('SHARED_SPACES.MANAGE_SHARED_SPACES.TITLE') }}</div>
+      <div>{{ $t('SHARED_SPACES.MANAGE_SHARED_SPACES.DESCRIPTION') }}</div>
     </template>
+
   </PageTitle>
+
+  <SharedSpacesList />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import PageTitle from '@/core/components/PageTitle.vue';
+import SharedSpacesList from '@/modules/shared-spaces/components/SharedSpacesList.vue';
 
 export default defineComponent({
   name: 'ManageSharedSpaces',
-  setup () {
-    return {};
+  components: {
+    SharedSpacesList,
+    PageTitle
   }
 });
 </script>

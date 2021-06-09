@@ -5,7 +5,9 @@
     "CANCEL": "Cancel",
     "DELETE": "Delete",
     "DELETION": "Deletion",
-    "SAVE": "Save"
+    "SAVE": "Save",
+    "UPDATE_TIME_RELATIVE": "Updated {time}",
+    "JUST_NOW": "just now"
   },
   "LOCALE": {
     "ENGLISH": "English",

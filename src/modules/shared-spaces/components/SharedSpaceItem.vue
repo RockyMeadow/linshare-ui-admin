@@ -12,7 +12,7 @@
         </template>
 
         <template #description>
-          <span>Updated {{ modificationDate }}</span>
+          <span>{{ $t('GENERAL.UPDATE_TIME_RELATIVE', { time: modificationDate })}}</span>
         </template>
       </a-list-item-meta>
 

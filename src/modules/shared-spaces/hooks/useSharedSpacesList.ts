@@ -31,14 +31,20 @@ export default function useSharedSpacesList () {
         return;
       }
 
-      let drive = list.find(node => node.uuid === sharedSpace.parentUuid);
+      let drive;
 
-      if (!drive) {
-        drive = await SharedSpacesAPIClient.getSharedSpace(sharedSpace.parentUuid);
-        drives.push(drive);
+      try {
+        drive = list.find(node => node.uuid === sharedSpace.parentUuid);
+
+        if (!drive) {
+          drive = await SharedSpacesAPIClient.getSharedSpace(sharedSpace.parentUuid);
+          drives.push(drive);
+        }
+
+        sharedSpace.parentName = drive.name;
+      } catch (error) {
+        console.debug('Failed to get parent drive', error);
       }
-
-      sharedSpace.parentName = drive.name;
     });
 
     return list;

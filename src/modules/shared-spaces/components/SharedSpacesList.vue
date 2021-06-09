@@ -8,7 +8,12 @@
         <SharedSpaceItem :data="item" />
       </template>
     </a-list>
-    <Pagination class="large-table__pagination" v-model="pagination" :isVisible="list.length" @change="handlePaginationChange"/>
+    <Pagination
+      class="large-table__pagination"
+      v-model="pagination"
+      :isVisible="!!list.length"
+      @change="handlePaginationChange"
+    />
   </div>
 </template>
 

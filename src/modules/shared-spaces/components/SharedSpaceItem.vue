@@ -3,18 +3,16 @@
     <a-list-item>
       <a-list-item-meta>
         <template #avatar>
-          <img
-            class="list-item__icon"
-            src="@/assets/images/workgroup.svg"
-          />
+          <component :is="icon" fill="#0372B3"/>
         </template>
 
         <template #title>
           <span class="list-item__name">{{data.name}}</span>
+          <span class="list-item__parent" v-if="data.parentName">@{{data.parentName}}</span>
         </template>
 
         <template #description>
-          <span>Updated 2 years ago</span>
+          <span>Updated {{ modificationDate }}</span>
         </template>
       </a-list-item-meta>
 
@@ -28,7 +26,10 @@
 </template>
 
 <script lang="ts">
+import WorkgroupIcon from './WorkgroupIcon.vue';
+import DriveIcon from './DriveIcon.vue';
 import { defineComponent } from 'vue';
+import useRelativeTime from '@/core/hooks/useRelativeTime';
 
 export default defineComponent({
   name: 'SharedSpaceItem',
@@ -37,6 +38,12 @@ export default defineComponent({
       type: Object,
       default: () => ({})
     }
+  },
+  setup (props) {
+    return {
+      modificationDate: useRelativeTime(props.data.modificationDate),
+      icon: props.data.nodeType === 'DRIVE' ? DriveIcon : WorkgroupIcon
+    };
   }
 });
 </script>
@@ -54,6 +61,13 @@ export default defineComponent({
     &__name {
       font-size: 16px;
       font-weight: 600;
+    }
+
+    &__parent {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0372B3;
+      margin-left: 7px;
     }
 
     &__node-type {

@@ -6,9 +6,15 @@ import SharedSpace from '@/modules/shared-spaces/type/SharedSpace';
 import SharedSpacesAPIClient, { ListSharedSpaceOptions } from '@/modules/shared-spaces/services/SharedSpacesAPIClient';
 import { DEFAULT_PAGE_SIZE } from '@/core/constants';
 
+interface Pagination {
+  total: number;
+  current: number;
+  pageSize: number;
+}
+
 const list = ref<SharedSpace[]>([]);
 const loading = ref(false);
-const pagination = reactive({
+const pagination = reactive<Pagination>({
   total: 0,
   current: 1,
   pageSize: DEFAULT_PAGE_SIZE
@@ -16,6 +22,27 @@ const pagination = reactive({
 
 export default function useSharedSpacesList () {
   const { t } = useI18n();
+
+  async function populateParentDrives (list: SharedSpace[]): Promise<SharedSpace[]> {
+    const drives = list.filter(sharedSpace => sharedSpace.nodeTye === 'DRIVE');
+
+    list.forEach(async sharedSpace => {
+      if (!sharedSpace.parentUuid) {
+        return;
+      }
+
+      let drive = list.find(node => node.uuid === sharedSpace.parentUuid);
+
+      if (!drive) {
+        drive = await SharedSpacesAPIClient.getSharedSpace(sharedSpace.parentUuid);
+        drives.push(drive);
+      }
+
+      sharedSpace.parentName = drive.name;
+    });
+
+    return list;
+  }
 
   async function updateSharedSpacesList (options: ListSharedSpaceOptions) {
     if (loading.value) {
@@ -27,7 +54,7 @@ export default function useSharedSpacesList () {
 
       const { data, total, current } = await SharedSpacesAPIClient.listSharedSpaces(options);
 
-      list.value = data;
+      list.value = await populateParentDrives(data);
       pagination.total = total;
       pagination.current = current + 1;
     } catch (error) {
@@ -38,14 +65,15 @@ export default function useSharedSpacesList () {
     }
   }
 
-  async function handlePaginationChange (page: number, size: number) {
+  async function handlePaginationChange (pagination: Pagination) {
     const options: ListSharedSpaceOptions = {};
 
-    options.page = page - 1;
-    options.size = size;
+    options.page = pagination.current - 1;
+    options.size = pagination.pageSize;
 
     await updateSharedSpacesList(options);
   }
+
   return {
     list,
     loading,

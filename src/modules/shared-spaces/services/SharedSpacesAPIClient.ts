@@ -29,6 +29,10 @@ class SharedSpacesAPIClient extends AdminAPIClient {
       current: Number(headers ? headers['current-page'] : 0)
     };
   };
+
+  async getSharedSpace (id: string): Promise<SharedSpace> {
+    return (await this.transport.get(id)).data;
+  }
 }
 
 export default new SharedSpacesAPIClient();

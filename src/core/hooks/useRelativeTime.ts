@@ -1,0 +1,30 @@
+import { useI18n } from 'vue-i18n';
+
+interface Unit {
+  max: number;
+  value: number;
+  name: Intl.RelativeTimeFormatUnit;
+}
+
+const UNITS: Unit[] = [
+  { max: 60000, value: 1000, name: 'second' },
+  { max: 2760000, value: 60000, name: 'minute' },
+  { max: 72000000, value: 3600000, name: 'hour' },
+  { max: 518400000, value: 86400000, name: 'day' },
+  { max: 2419200000, value: 604800000, name: 'week' },
+  { max: 28512000000, value: 2592000000, name: 'month' },
+  { max: Infinity, value: 31536000000, name: 'year' }
+];
+
+export default function useRelativeTime (from: Date | string | number) {
+  const { locale } = useI18n();
+  const { abs, round } = Math;
+  const now = new Date();
+  const diff = +now - +new Date(from);
+
+  for (const unit of UNITS) {
+    if (abs(diff) < unit.max) {
+      return new Intl.RelativeTimeFormat(locale.value).format(round(abs(diff) / unit.value), unit.name);
+    }
+  }
+}

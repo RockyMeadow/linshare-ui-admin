@@ -27,7 +27,7 @@ export default defineComponent({
   async setup () {
     const { loading, list, pagination, handlePaginationChange } = useSharedSpacesList();
 
-    await handlePaginationChange(pagination.current, pagination.pageSize);
+    await handlePaginationChange(pagination);
 
     return {
       loading,

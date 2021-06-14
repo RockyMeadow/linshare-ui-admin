@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, SetupContext } from 'vue';
-import { getReadable, STORATE_UNITS } from '@/core/utils/unitStorage';
+import { defineComponent, onMounted, ref, reactive, SetupContext } from 'vue';
+import { getReadable, STORATE_UNITS, ReadableSize } from '@/core/utils/unitStorage';
 
 export default defineComponent({
   name: 'SizeInput',
@@ -19,29 +19,19 @@ export default defineComponent({
     }
   },
   setup (props, { emit }: SetupContext) {
-    const unit = ref<number>(1);
-    const value = ref<number>(0);
+    let readable;
 
     function emitValue () {
       emit('input', value.value * unit.value);
     };
 
-    function updateValue () {
-      value.value = +(props.bytes / unit.value).toFixed(2);
-    }
-
     onMounted(() => {
-      const readable = getReadable(props.bytes);
-
-      value.value = readable.value;
-      unit.value = readable.unit.value;
+      readable = reactive(new ReadableSize(props.bytes));
     });
 
     return {
+      readable
       emitValue,
-      unit,
-      updateValue,
-      value,
       STORATE_UNITS
     };
   }

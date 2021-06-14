@@ -15,7 +15,7 @@ export const STORATE_UNITS: StorageUnit[] = [
   { value: Infinity, label: 'YB' }
 ];
 
-export function getReadable (bytes: number) {
+export function getReadablUnit (bytes: number) {
   const unit: StorageUnit = STORATE_UNITS[0];
   const { floor, log } = Math;
 
@@ -29,4 +29,29 @@ export function getReadable (bytes: number) {
     value: +(bytes / STORATE_UNITS[unitIndex].value).toFixed(2),
     unit: STORATE_UNITS[unitIndex]
   };
+}
+
+export class ReadableSize {
+  value: number;
+
+  constructor (public bytes: number) {
+    if (bytes < 0) {
+      this.value = 0;
+      this.unit = STORATE_UNITS[0];
+    } else {
+      const unitIndex = Math.floor(Math.log(bytes) / Math.log(1000));
+
+      this.unit = STORATE_UNITS[unitIndex]
+      this.value = +(bytes / STORATE_UNITS[unitIndex].value).toFixed(2)
+    }
+  }
+
+  set unit (unit: StorageUnit) {
+    this.unit = unit;
+    this.value = +(this.bytes / unit.value).toFixed(2)
+  }
+
+  public toString() {
+    return `${this.value} ${this.unit.label}`;
+  }
 }

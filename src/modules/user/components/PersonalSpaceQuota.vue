@@ -1,10 +1,10 @@
 <template>
   <div class="personal-space-quota">
     <a-row type="flex" :gutter="30" class="personal-space-quota__row">
-      <a-col :xl="7" :lg="10" :sm="12" :xs="24">
+      <a-col :xl="9" :lg="12" :sm="12" :xs="24">
         <a-form>
-          <span class="personal-space-quota__status">Used 333.33 MB over 1GB</span>
-          <a-progress :percent="percentUsed" :format="displayFormat"/>
+          <span class="personal-space-quota__status">Used {{}} over {{}}</span>
+          <a-progress :percent="percentUsed" />
 
           <div class="personal-space-quota__field">
             <span class="personal-space-quota__title">
@@ -16,12 +16,17 @@
             </div>
             <span class="personal-space-quota__label">Current value</span>
 
-            <SizeInput v-model:bytes="quota.quota"/>
-            <a-button :size="link">
-              <template #icon>
-                <UndoOutlined />
-              </template>
-            </a-button>
+            <div class="personal-space-quota__input-group">
+              <SizeInput v-model:bytes="quota.quota"/>
+
+              <div class="reset-button">
+                <a-button type="link">
+                  <template #icon>
+                    <ReloadOutlined />
+                  </template>
+                </a-button>
+              </div>
+            </div>
           </div>
 
           <div class="personal-space-quota__field">
@@ -38,17 +43,33 @@
               <SizeInput v-model:bytes="quota.maxFileSize"/>
 
               <div class="reset-button">
-                <a-button :size="link">
+                <a-button type="link">
                   <template #icon>
-                    <UndoOutlined />
+                    <ReloadOutlined />
                   </template>
                 </a-button>
               </div>
             </div>
           </div>
 
-          <div class=>
-            <a-button class="personal-space-quota__save" type="primary">{{ $t('GENERAL.SAVE') }}</a-button>
+          <div class="personal-space-quota__action-buttons">
+            <div>
+              <a-button>
+                Use defaults
+                <template #icon>
+                  <ReloadOutlined />
+                </template>
+              </a-button>
+            </div>
+            <div>
+              <a-button class="reset" type="primary">Reset</a-button>
+              <a-button style="margin-left: 10px" type="primary">
+                {{ $t('GENERAL.SAVE') }}
+                <template #icon>
+                  <CheckOutlined />
+                </template>
+              </a-button>
+            </div>
           </div>
         </a-form>
       </a-col>
@@ -59,8 +80,7 @@
 <script lang="ts">
 import { defineComponent, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
-import { UndoOutlined } from '@ant-design/icons-vue';
-import { getReadable } from '@/core/utils/unitStorage';
+import { ReloadOutlined, CheckOutlined } from '@ant-design/icons-vue';
 import SizeInput from '@/core/components/SizeInput.vue';
 import UserQuota from '@/modules/user/type/UserQuota';
 import UserAPIClient from '@/modules/user/services/UserAPIClient';
@@ -68,7 +88,8 @@ import UserAPIClient from '@/modules/user/services/UserAPIClient';
 export default defineComponent({
   name: 'PersonalSpaceQuota',
   components: {
-    UndoOutlined,
+    CheckOutlined,
+    ReloadOutlined,
     SizeInput
   },
   async setup () {
@@ -76,10 +97,7 @@ export default defineComponent({
     const { uuid, quotaUuid } = store.getters['User/getUser'];
     const data = await UserAPIClient.getUserQuota(uuid, quotaUuid);
     const quota = reactive<UserQuota>(data);
-    const displayFormat = (percent: number) => `Used ${percent}%`;
-
     return {
-      displayFormat,
       quota,
       percentUsed: computed(() => Math.round(quota.realTimeUsedSpace / quota.quota * 100))
     };
@@ -121,7 +139,18 @@ export default defineComponent({
     display: flex;
 
     .reset-button {
-      flex: 0 1 40px;
+      flex: 0 1 50px;
+    }
+  }
+
+  &__action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+
+    .reset {
+      background-color: #1B4157;
+      border-color: #1B4157;
     }
   }
 

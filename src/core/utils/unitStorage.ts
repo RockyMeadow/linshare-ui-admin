@@ -1,57 +1,39 @@
 interface StorageUnit {
-  value: number;
+  base: number;
   label: string;
 }
 
-export const STORATE_UNITS: StorageUnit[] = [
-  { value: 1, label: 'B' },
-  { value: 1e3, label: 'KB' },
-  { value: 1e6, label: 'MB' },
-  { value: 1e9, label: 'GB' },
-  { value: 1e10, label: 'TB' },
-  { value: 1e12, label: 'PB' },
-  { value: 1e15, label: 'EB' },
-  { value: 1e18, label: 'ZB' },
-  { value: Infinity, label: 'YB' }
+export const STORAGE_UNITS: StorageUnit[] = [
+  { base: 1, label: 'B' },
+  { base: 1e3, label: 'KB' },
+  { base: 1e6, label: 'MB' },
+  { base: 1e9, label: 'GB' },
+  { base: 1e12, label: 'TB' },
+  { base: 1e15, label: 'PB' },
+  { base: 1e18, label: 'EB' },
+  { base: 1e21, label: 'ZB' },
+  { base: 1e24, label: 'YB' }
 ];
 
-export function getReadablUnit (bytes: number) {
-  const unit: StorageUnit = STORATE_UNITS[0];
+export function getReadableSize (bytes: number, decimals = 2) {
+  let unit: StorageUnit = STORAGE_UNITS[0];
+  let value: number;
   const { floor, log } = Math;
 
-  if (bytes < 0) {
-    return { value: 0, unit };
-  }
+  if (bytes < 0 || bytes === 0) {
+    value = 0;
+  } else {
+    const unitIndex = floor(log(bytes) / log(1000));
 
-  const unitIndex = floor(log(bytes) / log(1000));
+    value = +(bytes / STORAGE_UNITS[unitIndex].base).toFixed(decimals);
+    unit = STORAGE_UNITS[unitIndex > 8 ? 8 : unitIndex];
+  }
 
   return {
-    value: +(bytes / STORATE_UNITS[unitIndex].value).toFixed(2),
-    unit: STORATE_UNITS[unitIndex]
-  };
-}
-
-export class ReadableSize {
-  value: number;
-
-  constructor (public bytes: number) {
-    if (bytes < 0) {
-      this.value = 0;
-      this.unit = STORATE_UNITS[0];
-    } else {
-      const unitIndex = Math.floor(Math.log(bytes) / Math.log(1000));
-
-      this.unit = STORATE_UNITS[unitIndex]
-      this.value = +(bytes / STORATE_UNITS[unitIndex].value).toFixed(2)
+    value,
+    unit,
+    toString () {
+      return `${value} ${unit.label}`;
     }
-  }
-
-  set unit (unit: StorageUnit) {
-    this.unit = unit;
-    this.value = +(this.bytes / unit.value).toFixed(2)
-  }
-
-  public toString() {
-    return `${this.value} ${this.unit.label}`;
-  }
+  };
 }

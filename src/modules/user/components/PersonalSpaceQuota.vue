@@ -16,7 +16,7 @@
             </div>
             <span class="personal-space-quota__label">Current value</span>
 
-            <SizeInput v-model:value="quota.quota"/>
+            <SizeInput v-model:bytes="quota.quota"/>
             <a-button :size="link">
               <template #icon>
                 <UndoOutlined />
@@ -26,7 +26,7 @@
 
           <div class="personal-space-quota__field">
             <span class="personal-space-quota__title">
-              User's personal space allocated quota
+              User's max upload file size in Personal Space
             </span>
             <div class="personal-space-quota__default-value">
               <span class="label">Default value:</span>
@@ -35,7 +35,7 @@
             <span class="personal-space-quota__label">Current value</span>
 
             <div class="personal-space-quota__input-group">
-              <SizeInput v-model:value="quota.maxFileSize"/>
+              <SizeInput v-model:bytes="quota.maxFileSize"/>
 
               <div class="reset-button">
                 <a-button :size="link">
@@ -47,7 +47,9 @@
             </div>
           </div>
 
-          <a-button class="personal-space-quota__save" type="primary">{{ $t('GENERAL.SAVE') }}</a-button>
+          <div class=>
+            <a-button class="personal-space-quota__save" type="primary">{{ $t('GENERAL.SAVE') }}</a-button>
+          </div>
         </a-form>
       </a-col>
     </a-row>
@@ -58,6 +60,7 @@
 import { defineComponent, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { UndoOutlined } from '@ant-design/icons-vue';
+import { getReadable } from '@/core/utils/unitStorage';
 import SizeInput from '@/core/components/SizeInput.vue';
 import UserQuota from '@/modules/user/type/UserQuota';
 import UserAPIClient from '@/modules/user/services/UserAPIClient';

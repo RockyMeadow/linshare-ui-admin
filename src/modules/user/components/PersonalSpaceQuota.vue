@@ -16,20 +16,7 @@
             </div>
             <span class="personal-space-quota__label">Current value</span>
 
-            <a-input type="number">
-              <template #addonAfter>
-                <a-select style="width: 80px">
-                  <a-select-option value="1">KB</a-select-option>
-                  <a-select-option value="2">MB</a-select-option>
-                  <a-select-option value="3">GB</a-select-option>
-                  <a-select-option value="4">TB</a-select-option>
-                  <a-select-option value="5">PB</a-select-option>
-                  <a-select-option value="6">EB</a-select-option>
-                  <a-select-option value="7">ZB</a-select-option>
-                  <a-select-option value="8">YB</a-select-option>
-                </a-select>
-              </template>
-            </a-input>
+            <SizeInput v-model:value="quota.quota"/>
             <a-button :size="link">
               <template #icon>
                 <UndoOutlined />
@@ -48,20 +35,7 @@
             <span class="personal-space-quota__label">Current value</span>
 
             <div class="personal-space-quota__input-group">
-              <a-input type="number">
-                <template #addonAfter>
-                  <a-select style="width: 80px">
-                    <a-select-option value="1">KB</a-select-option>
-                    <a-select-option value="2">MB</a-select-option>
-                    <a-select-option value="3">GB</a-select-option>
-                    <a-select-option value="4">TB</a-select-option>
-                    <a-select-option value="5">PB</a-select-option>
-                    <a-select-option value="6">EB</a-select-option>
-                    <a-select-option value="7">ZB</a-select-option>
-                    <a-select-option value="8/">YB</a-select-option>
-                  </a-select>
-                </template>
-              </a-input>
+              <SizeInput v-model:value="quota.maxFileSize"/>
 
               <div class="reset-button">
                 <a-button :size="link">
@@ -84,20 +58,22 @@
 import { defineComponent, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { UndoOutlined } from '@ant-design/icons-vue';
+import SizeInput from '@/core/components/SizeInput.vue';
 import UserQuota from '@/modules/user/type/UserQuota';
 import UserAPIClient from '@/modules/user/services/UserAPIClient';
 
 export default defineComponent({
   name: 'PersonalSpaceQuota',
   components: {
-    UndoOutlined
+    UndoOutlined,
+    SizeInput
   },
   async setup () {
     const store = useStore();
     const { uuid, quotaUuid } = store.getters['User/getUser'];
     const data = await UserAPIClient.getUserQuota(uuid, quotaUuid);
     const quota = reactive<UserQuota>(data);
-    const displayFormat = (percent: any) => `Used ${percent}%`;
+    const displayFormat = (percent: number) => `Used ${percent}%`;
 
     return {
       displayFormat,
